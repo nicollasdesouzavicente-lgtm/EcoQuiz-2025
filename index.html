@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ECO QUIZ</title>
+
+    <!-- Bootstrap & jQuery (CDN) -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet"
+        id="bootstrap-css">
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background: url("planta.jpg") left top repeat-y;
+            background-size: 150px auto;
+            background-color: rgb(246, 246, 246);
+            position: relative;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 100%;
+            background: url("planta.jpg") top repeat-y;
+            background-size: 150px auto;
+            transform: scaleX(-1);
+            /* espelha horizontalmente */
+        }
+
+        body,
+        .modal-content,
+        .btn,
+        .label,
+        h3,
+        span,
+        div {
+            font-family: 'Roboto', sans-serif !important;
+        }
+
+        .modal-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        #qid {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        label.btn {
+            padding: 18px 60px;
+            white-space: normal;
+            transition-duration: .3s;
+            transform: scale(1.0);
+        }
+
+        label.btn:hover {
+            text-shadow: 0 3px 2px rgba(0, 0, 0, 0.4);
+            transform: scale(1.1);
+        }
+
+        label.btn-block {
+            text-align: left;
+            position: relative;
+        }
+
+        label .btn-label {
+            position: absolute;
+            left: 0;
+            top: 0;
+            display: inline-block;
+            padding: 0 10px;
+            background: rgba(0, 0, 0, .15);
+            height: 100%;
+        }
+
+        label .glyphicon {
+            top: 34%;
+        }
+
+        .element-animation1 {
+            animation: animationFrames ease .8s;
+        }
+
+        .element-animation2 {
+            animation: animationFrames ease 1s;
+        }
+
+        .element-animation3 {
+            animation: animationFrames ease 1.2s;
+        }
+
+        .element-animation4 {
+            animation: animationFrames ease 1.4s;
+        }
+
+        @keyframes animationFrames {
+            0% {
+                opacity: 0;
+                transform: translate(-1500px, 0px)
+            }
+
+            60% {
+                opacity: 1;
+                transform: translate(30px, 0px)
+            }
+
+            80% {
+                transform: translate(-10px, 0px)
+            }
+
+            100% {
+                opacity: 1;
+                transform: translate(0px, 0px)
+            }
+        }
+
+        .modal-header {
+            background-color: transparent;
+            color: inherit;
+        }
+
+        .modal-body {
+            min-height: 205px;
+        }
+
+        #loadbar {
+            position: absolute;
+            width: 62px;
+            height: 77px;
+            top: 2em;
+        }
+
+        .blockG {
+            position: absolute;
+            background-color: #FFF;
+            width: 10px;
+            height: 24px;
+            border-radius: 8px 8px 0 0;
+            transform: scale(0.4);
+            animation-name: fadeG;
+            animation-duration: .88s;
+            animation-iteration-count: infinite;
+            animation-direction: linear;
+        }
+
+        #rotateG_01 {
+            left: 0;
+            top: 28px;
+            animation-delay: .33s;
+            transform: rotate(-90deg);
+        }
+
+        #rotateG_02 {
+            left: 8px;
+            top: 10px;
+            animation-delay: .44s;
+            transform: rotate(-45deg);
+        }
+
+        #rotateG_03 {
+            left: 26px;
+            top: 3px;
+            animation-delay: .55s;
+            transform: rotate(0deg);
+        }
+
+        #rotateG_04 {
+            right: 8px;
+            top: 10px;
+            animation-delay: .66s;
+            transform: rotate(45deg);
+        }
+
+        #rotateG_05 {
+            right: 0;
+            top: 28px;
+            animation-delay: .77s;
+            transform: rotate(90deg);
+        }
+
+        #rotateG_06 {
+            right: 8px;
+            bottom: 7px;
+            animation-delay: .88s;
+            transform: rotate(135deg);
+        }
+
+        #rotateG_07 {
+            bottom: 0;
+            left: 26px;
+            animation-delay: .99s;
+            transform: rotate(180deg);
+        }
+
+        #rotateG_08 {
+            left: 8px;
+            bottom: 7px;
+            animation-delay: 1.1s;
+            transform: rotate(-135deg);
+        }
+
+        @keyframes fadeG {
+            0% {
+                background-color: #000;
+            }
+
+            100% {
+                background-color: #FFF;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div id="contador" class="fs-3 fw-bold text-center text-danger my-3">01:00</div>
+
+                    <h3>
+                        <span class="label label-success" id="qid">1</span>
+                        <span id="question">Carregando pergunta...</span>
+                    </h3>
+                </div>
+                <div class="modal-body">
+                    <div class="col-xs-3 col-xs-offset-5">
+                        <div id="loadbar" style="display: none;">
+                            <div class="blockG" id="rotateG_01"></div>
+                            <div class="blockG" id="rotateG_02"></div>
+                            <div class="blockG" id="rotateG_03"></div>
+                            <div class="blockG" id="rotateG_04"></div>
+                            <div class="blockG" id="rotateG_05"></div>
+                            <div class="blockG" id="rotateG_06"></div>
+                            <div class="blockG" id="rotateG_07"></div>
+                            <div class="blockG" id="rotateG_08"></div>
+                        </div>
+                    </div>
+
+                    <div class="quiz" id="quiz" data-toggle="buttons">
+
+                    </div>
+                </div>
+                <div class="modal-footer text-muted">
+                    <span id="answer"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+            const API_BASE = "http://localhost:3000";
+
+            let questions = [];
+            let currentIndex = 0;
+            let score = 0;
+
+            async function loadQuiz() {
+                try {
+                    const res = await $.getJSON(`${API_BASE}/quiz-sustentabilidade?n=5`);
+                    console.log("Resposta da API:", res);
+                    questions = res.questions || res;
+                    currentIndex = 0;
+                    score = 0;
+                    showQuestion();
+                } catch (err) {
+                    $("#question").text("❌ Erro ao carregar quiz");
+                    console.error(err);
+                }
+            }
+
+            function showQuestion() {
+                // if (currentIndex >= questions.length) {
+
+                //     $("#question").text("Fim do quiz!");
+                //     $("#quiz").html("");
+                //     $("#answer").html(`Pontuação final: ${score}/${questions.length}`);
+                //     tempoFinal = 50 - tempoRestante;
+                //     console.log(tempoFinal)
+                //     return;
+                // }
+
+                if (currentIndex >= questions.length) {
+
+                    $("#question").text("Fim do quiz!");
+                    $("#quiz").html("");
+                    $("#answer").html(`Pontuação final: ${score}/${questions.length}`);
+
+                    clearInterval(intervalo);
+
+                    // calcula o tempo gasto corretamente
+                    const tempoGasto = 50 - tempoRestante;
+
+                    // envia score e tempo para o backend
+                    fetch("http://localhost:3000/score", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            user: localStorage.getItem("nomeUsuario" || "").trim() || "Anônimo",
+                            score: score,
+                            tempo: tempoGasto   // número de segundos
+                        })
+                    })
+                        .then(r => r.json())
+                        .then(d => console.log("✅ Salvo no banco:", d, { tempoGasto, tempoRestante }))
+                        .catch(e => console.error("❌ Erro ao salvar:", e, { tempoGasto, tempoRestante }));
+
+                    return;
+
+                }
+
+                const q = questions[currentIndex];
+                $("#qid").text(currentIndex + 1);
+                $("#question").text(q.question);
+
+                let html = "";
+                q.options.forEach((opt, i) => {
+                    html += `
+                <label class="element-animation${(i % 4) + 1} btn btn-lg btn-success btn-block option-btn">
+                    <span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span>
+                    <input type="radio" name="q_answer" value="${opt}"> ${opt}
+                </label>`;
+                });
+                $("#quiz").html(html);
+
+                $(".option-btn").on("click", function () {
+                    var choice = $(this).find("input:radio").val();
+                    if (choice === q.answer) {
+                        $("#answer").html("✅ CORRETO!");
+                        score++;
+                    } else {
+                        $("#answer").html("❌ INCORRETO. Resposta: " + q.answer);
+                    }
+
+                    setTimeout(() => {
+                        currentIndex++;
+                        showQuestion();
+                    }, 2000);
+                });
+            }
+            let tempoRestante = 50;
+            let tempoFinal = 0;
+            const contadorEl = document.getElementById("contador");
+
+            function atualizarContador() {
+                const minutos = Math.floor(tempoRestante / 60);
+                const segundos = tempoRestante % 60;
+
+                contadorEl.textContent =
+                    `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+
+                if (tempoRestante === 0) {
+                    clearInterval(intervalo);
+                    contadorEl.textContent = "Tempo esgotado!";
+
+                } else {
+                    tempoRestante--;
+
+                }
+            }
+
+            const intervalo = setInterval(atualizarContador, 1000);
+            console.log(intervalo)
+            atualizarContador();
+
+            loadQuiz();
+        });
+    </script>
+</body>
+
+</html>
